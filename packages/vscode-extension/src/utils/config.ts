@@ -6,6 +6,7 @@ export interface ProveItConfig {
   sessionEndTimeoutMinutes: number;
   flushIntervalSeconds: number;
   excludePatterns: string[];
+  aiToolDetection: boolean;
 }
 
 export function getConfig(): ProveItConfig {
@@ -16,5 +17,6 @@ export function getConfig(): ProveItConfig {
     sessionEndTimeoutMinutes: config.get<number>('sessionEndTimeoutMinutes', 30),
     flushIntervalSeconds: config.get<number>('flushIntervalSeconds', 60),
     excludePatterns: config.get<string[]>('excludePatterns', ['.env', '.env.*', '*.pem', '*.key']),
+    aiToolDetection: config.get<boolean>('aiToolDetection', true),
   };
 }

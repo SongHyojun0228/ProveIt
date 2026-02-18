@@ -10,6 +10,7 @@ interface Metrics {
   errorsEncountered: number;
   errorsResolved: number;
   aiCompletions: { accepted: number; rejected: number; modified: number; acceptRate: number };
+  aiToolEdits?: { filesEdited: number; linesAdded: number; linesDeleted: number; toolBreakdown: Record<string, number> };
 }
 
 interface Duration {
@@ -20,6 +21,9 @@ interface Duration {
 
 export function MetricsGrid({ metrics, duration }: { metrics: Metrics; duration: Duration }) {
   const totalAI = metrics.aiCompletions.accepted + metrics.aiCompletions.rejected + metrics.aiCompletions.modified;
+  const aiToolLines = metrics.aiToolEdits
+    ? metrics.aiToolEdits.linesAdded + metrics.aiToolEdits.linesDeleted
+    : 0;
 
   const items = [
     { label: 'Active Time', value: formatDuration(duration.activeMs) },
@@ -32,6 +36,8 @@ export function MetricsGrid({ metrics, duration }: { metrics: Metrics; duration:
     { label: 'Errors', value: `${metrics.errorsResolved}/${metrics.errorsEncountered} resolved` },
     { label: 'AI Completions', value: totalAI.toString() },
     { label: 'AI Accept Rate', value: totalAI > 0 ? formatPercent(metrics.aiCompletions.acceptRate) : 'N/A' },
+    { label: 'AI Tool Edits', value: metrics.aiToolEdits ? metrics.aiToolEdits.filesEdited.toString() + ' files' : 'N/A' },
+    { label: 'AI Tool Lines', value: aiToolLines > 0 ? aiToolLines.toString() : 'N/A' },
   ];
 
   return (

@@ -5,6 +5,9 @@ export function buildSessionInsightPrompt(session: Session): string {
   const { metrics } = session;
   const totalAI = metrics.aiCompletions.accepted + metrics.aiCompletions.rejected + metrics.aiCompletions.modified;
   const aiRate = totalAI > 0 ? ((metrics.aiCompletions.accepted / totalAI) * 100).toFixed(1) : '0';
+  const aiToolEdits = metrics.aiToolEdits;
+  const aiToolLines = aiToolEdits ? aiToolEdits.linesAdded + aiToolEdits.linesDeleted : 0;
+  const aiToolBreakdown = aiToolEdits?.toolBreakdown ?? {};
 
   const eventSummary = session.events
     .slice(0, 200)
@@ -20,6 +23,7 @@ export function buildSessionInsightPrompt(session: Session): string {
 - Commits: ${metrics.commits}
 - AI completions: ${totalAI} total (${aiRate}% acceptance rate)
 - Errors encountered: ${metrics.errorsEncountered}, resolved: ${metrics.errorsResolved}
+- AI tool edits: ${aiToolEdits?.filesEdited ?? 0} files, ${aiToolLines} lines (tools: ${Object.entries(aiToolBreakdown).map(([k, v]) => `${k}:${v}`).join(', ') || 'none'})
 - Terminal commands: ${metrics.terminalCommands}
 
 ## Event Timeline (chronological)

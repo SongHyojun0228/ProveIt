@@ -14,6 +14,9 @@ export enum EventType {
   SESSION_START = 'session_start',
   SESSION_PAUSE = 'session_pause',
   SESSION_RESUME = 'session_resume',
+  AI_TOOL_DETECTED = 'ai_tool_detected',
+  AI_TOOL_EDIT = 'ai_tool_edit',
+  AI_TOOL_SESSION_END = 'ai_tool_session_end',
 }
 
 export interface FileChangeData {
@@ -93,6 +96,33 @@ export interface SessionEventData {
   reason?: string;
 }
 
+export type AIToolName = 'claude-code' | 'cursor-agent' | 'aider' | 'copilot-cli' | 'unknown';
+export type AIToolDetectionMethod = 'process' | 'velocity' | 'external_change' | 'combined';
+
+export interface AIToolDetectedData {
+  toolName: AIToolName;
+  processName: string;
+  pid?: number;
+}
+
+export interface AIToolEditData {
+  toolName: AIToolName;
+  filePath: string;
+  languageId: string;
+  linesAdded: number;
+  linesDeleted: number;
+  changeSize: number;
+  detectionMethod: AIToolDetectionMethod;
+  confidence: number;
+}
+
+export interface AIToolSessionEndData {
+  toolName: AIToolName;
+  durationMs: number;
+  filesEdited: number;
+  totalLinesChanged: number;
+}
+
 export type EventData =
   | FileChangeData
   | FileCreateData
@@ -104,7 +134,10 @@ export type EventData =
   | TerminalCommandData
   | ErrorOccurredData
   | ErrorResolvedData
-  | SessionEventData;
+  | SessionEventData
+  | AIToolDetectedData
+  | AIToolEditData
+  | AIToolSessionEndData;
 
 export interface ActivityEvent {
   id: string;

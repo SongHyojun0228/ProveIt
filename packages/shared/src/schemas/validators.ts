@@ -70,6 +70,37 @@ export const SessionEventDataSchema = z.object({
   reason: z.string().optional(),
 });
 
+export const AIToolDetectedDataSchema = z.object({
+  toolName: z.enum(['claude-code', 'cursor-agent', 'aider', 'copilot-cli', 'unknown']),
+  processName: z.string(),
+  pid: z.number().int().optional(),
+});
+
+export const AIToolEditDataSchema = z.object({
+  toolName: z.enum(['claude-code', 'cursor-agent', 'aider', 'copilot-cli', 'unknown']),
+  filePath: z.string(),
+  languageId: z.string(),
+  linesAdded: z.number().int().min(0),
+  linesDeleted: z.number().int().min(0),
+  changeSize: z.number().int().min(0),
+  detectionMethod: z.enum(['process', 'velocity', 'external_change', 'combined']),
+  confidence: z.number().min(0).max(1),
+});
+
+export const AIToolSessionEndDataSchema = z.object({
+  toolName: z.enum(['claude-code', 'cursor-agent', 'aider', 'copilot-cli', 'unknown']),
+  durationMs: z.number().min(0),
+  filesEdited: z.number().int().min(0),
+  totalLinesChanged: z.number().int().min(0),
+});
+
+export const AIToolMetricsSchema = z.object({
+  filesEdited: z.number().int().min(0),
+  linesAdded: z.number().int().min(0),
+  linesDeleted: z.number().int().min(0),
+  toolBreakdown: z.record(z.string(), z.number().int().min(0)),
+});
+
 export const ActivityEventSchema = z.object({
   id: z.string(),
   type: z.nativeEnum(EventType),
@@ -93,6 +124,7 @@ export const SessionMetricsSchema = z.object({
   errorsEncountered: z.number().int().min(0),
   errorsResolved: z.number().int().min(0),
   aiCompletions: AICompletionMetricsSchema,
+  aiToolEdits: AIToolMetricsSchema.optional(),
 });
 
 export const SessionDurationSchema = z.object({

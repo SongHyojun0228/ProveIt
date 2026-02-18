@@ -13,6 +13,8 @@ export const sessionAggregator = {
     let aiAccepted = 0;
     let aiRejected = 0;
     let aiModified = 0;
+    let aiToolLinesAdded = 0;
+    let aiToolLinesDeleted = 0;
 
     for (const session of sessions) {
       totalActiveTimeMs += session.duration.activeMs;
@@ -25,6 +27,10 @@ export const sessionAggregator = {
       aiAccepted += session.metrics.aiCompletions.accepted;
       aiRejected += session.metrics.aiCompletions.rejected;
       aiModified += session.metrics.aiCompletions.modified;
+      if (session.metrics.aiToolEdits) {
+        aiToolLinesAdded += session.metrics.aiToolEdits.linesAdded;
+        aiToolLinesDeleted += session.metrics.aiToolEdits.linesDeleted;
+      }
     }
 
     const totalAI = aiAccepted + aiRejected + aiModified;

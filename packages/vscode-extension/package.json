@@ -110,6 +110,11 @@
           "type": "string",
           "default": "http://localhost:4000",
           "description": "URL of the ProveIt backend server"
+        },
+        "proveit.aiToolDetection": {
+          "type": "boolean",
+          "default": true,
+          "description": "Detect CLI AI tools (Claude Code, Aider, Cursor, etc.) editing files"
         }
       }
     }

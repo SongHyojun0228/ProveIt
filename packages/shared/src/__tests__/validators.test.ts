@@ -18,6 +18,7 @@ describe('SessionMetricsSchema', () => {
       errorsEncountered: 3,
       errorsResolved: 2,
       aiCompletions: { accepted: 5, rejected: 3, modified: 1, acceptRate: 0.555 },
+      aiToolEdits: { filesEdited: 0, linesAdded: 0, linesDeleted: 0, toolBreakdown: {} },
     };
     expect(() => SessionMetricsSchema.parse(metrics)).not.toThrow();
   });
@@ -32,6 +33,7 @@ describe('SessionMetricsSchema', () => {
       errorsEncountered: 0,
       errorsResolved: 0,
       aiCompletions: { accepted: 0, rejected: 0, modified: 0, acceptRate: 0 },
+      aiToolEdits: { filesEdited: 0, linesAdded: 0, linesDeleted: 0, toolBreakdown: {} },
     };
     expect(() => SessionMetricsSchema.parse(metrics)).toThrow();
   });
@@ -68,6 +70,7 @@ describe('SessionSchema', () => {
         errorsEncountered: 3,
         errorsResolved: 2,
         aiCompletions: { accepted: 5, rejected: 3, modified: 1, acceptRate: 0.555 },
+        aiToolEdits: { filesEdited: 0, linesAdded: 0, linesDeleted: 0, toolBreakdown: {} },
       },
       events: [],
     };
@@ -90,6 +93,7 @@ describe('SessionSchema', () => {
         errorsEncountered: 0,
         errorsResolved: 0,
         aiCompletions: { accepted: 0, rejected: 0, modified: 0, acceptRate: 0 },
+        aiToolEdits: { filesEdited: 0, linesAdded: 0, linesDeleted: 0, toolBreakdown: {} },
       },
       events: [],
     };

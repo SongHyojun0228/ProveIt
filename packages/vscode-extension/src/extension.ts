@@ -7,8 +7,10 @@ import { SessionManager } from './session/SessionManager';
 import { FileChangeTracker } from './trackers/FileChangeTracker';
 import { GitTracker } from './trackers/GitTracker';
 import { AICopilotTracker } from './trackers/AICopilotTracker';
-import { TerminalTracker } from './trackers/TerminalTracker';
+// TerminalTracker disabled — requires proposed API (terminalDataWriteEvent)
+// import { TerminalTracker } from './trackers/TerminalTracker';
 import { ErrorTracker } from './trackers/ErrorTracker';
+import { AIToolDetector } from './trackers/AIToolDetector';
 import { StatusBarManager } from './ui/StatusBarManager';
 import { SessionTreeViewProvider } from './ui/TreeViewProvider';
 import { registerCommands } from './ui/commands';
@@ -78,22 +80,25 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     const fileTracker = new FileChangeTracker(sessionManager);
     const gitTracker = new GitTracker(sessionManager);
     const aiTracker = new AICopilotTracker(sessionManager);
-    const terminalTracker = new TerminalTracker(sessionManager);
     const errorTracker = new ErrorTracker(sessionManager);
+    const aiToolDetector = new AIToolDetector(sessionManager);
 
     fileTracker.start();
     await gitTracker.start();
     aiTracker.start();
-    terminalTracker.start();
     errorTracker.start();
+    aiToolDetector.start();
+
+    // Flush pending tracker data before session ends
+    sessionManager.registerPreEndFlush(() => fileTracker.flush());
 
     context.subscriptions.push(
       sessionManager,
       fileTracker,
       gitTracker,
       aiTracker,
-      terminalTracker,
       errorTracker,
+      aiToolDetector,
     );
 
     // Auto-start session

@@ -20,6 +20,13 @@ export interface AICompletionMetrics {
   acceptRate: number;
 }
 
+export interface AIToolMetrics {
+  filesEdited: number;
+  linesAdded: number;
+  linesDeleted: number;
+  toolBreakdown: Record<string, number>;
+}
+
 export interface SessionMetrics {
   filesModified: number;
   linesAdded: number;
@@ -29,6 +36,7 @@ export interface SessionMetrics {
   errorsEncountered: number;
   errorsResolved: number;
   aiCompletions: AICompletionMetrics;
+  aiToolEdits?: AIToolMetrics;
 }
 
 export interface Session {
@@ -57,6 +65,12 @@ export function createEmptyMetrics(): SessionMetrics {
       rejected: 0,
       modified: 0,
       acceptRate: 0,
+    },
+    aiToolEdits: {
+      filesEdited: 0,
+      linesAdded: 0,
+      linesDeleted: 0,
+      toolBreakdown: {},
     },
   };
 }

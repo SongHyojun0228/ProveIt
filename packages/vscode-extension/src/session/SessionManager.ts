@@ -9,6 +9,7 @@ import {
   nowISO,
   elapsedMs,
   type FileChangeData,
+  type AIToolEditData,
   type SessionMetrics,
 } from '@proveit/shared';
 import { IdleDetector } from './IdleDetector';
@@ -26,6 +27,7 @@ export class SessionManager implements vscode.Disposable {
   private pauseStartTime: number | null = null;
   private totalPausedMs = 0;
   private modifiedFiles = new Set<string>();
+  private preEndFlushCallbacks: (() => void)[] = [];
 
   private readonly _onSessionStateChanged = new vscode.EventEmitter<SessionState | null>();
   readonly onSessionStateChanged = this._onSessionStateChanged.event;
@@ -111,6 +113,11 @@ export class SessionManager implements vscode.Disposable {
       this.pauseStartTime = null;
     }
 
+    // Flush all pending tracker data before computing metrics
+    for (const flush of this.preEndFlushCallbacks) {
+      flush();
+    }
+
     this.currentSession.state = SessionState.ENDED;
     this.currentSession.endTime = nowISO();
     this.updateDuration();
@@ -163,6 +170,10 @@ export class SessionManager implements vscode.Disposable {
 
     this.eventBuffer.push(filtered);
     this.idleDetector.recordActivity();
+  }
+
+  registerPreEndFlush(callback: () => void): void {
+    this.preEndFlushCallbacks.push(callback);
   }
 
   getState(): SessionState | null {
@@ -221,6 +232,7 @@ export class SessionManager implements vscode.Disposable {
 
     const allEvents = [...this.currentSession.events, ...this.eventBuffer];
     const metrics: SessionMetrics = createEmptyMetrics();
+    const aiToolFiles = new Set<string>();
 
     metrics.filesModified = this.modifiedFiles.size;
 
@@ -253,6 +265,15 @@ export class SessionManager implements vscode.Disposable {
         case EventType.AI_COMPLETION_MODIFIED:
           metrics.aiCompletions.modified++;
           break;
+        case EventType.AI_TOOL_EDIT: {
+          const d = event.data as AIToolEditData;
+          aiToolFiles.add(d.filePath);
+          metrics.aiToolEdits.linesAdded += d.linesAdded;
+          metrics.aiToolEdits.linesDeleted += d.linesDeleted;
+          metrics.aiToolEdits.toolBreakdown[d.toolName] =
+            (metrics.aiToolEdits.toolBreakdown[d.toolName] ?? 0) + 1;
+          break;
+        }
       }
     }
 
@@ -261,6 +282,7 @@ export class SessionManager implements vscode.Disposable {
       metrics.aiCompletions.rejected +
       metrics.aiCompletions.modified;
     metrics.aiCompletions.acceptRate = totalAI > 0 ? metrics.aiCompletions.accepted / totalAI : 0;
+    metrics.aiToolEdits.filesEdited = aiToolFiles.size;
 
     this.currentSession.metrics = metrics;
   }

@@ -14,6 +14,11 @@ export {
   type ErrorOccurredData,
   type ErrorResolvedData,
   type SessionEventData,
+  type AIToolName,
+  type AIToolDetectionMethod,
+  type AIToolDetectedData,
+  type AIToolEditData,
+  type AIToolSessionEndData,
 } from './types/events';
 
 export {
@@ -23,6 +28,7 @@ export {
   type SessionDuration,
   type SessionMetrics,
   type AICompletionMetrics,
+  type AIToolMetrics,
 } from './types/session';
 
 export {

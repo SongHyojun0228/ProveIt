@@ -86,9 +86,13 @@ export class FileChangeTracker implements vscode.Disposable {
     return map[ext] ?? ext;
   }
 
-  dispose(): void {
+  flush(): void {
     this.debouncedFlush.cancel();
     this.flushPendingChanges();
+  }
+
+  dispose(): void {
+    this.flush();
     this.disposables.forEach((d) => d.dispose());
     this.disposables = [];
   }
