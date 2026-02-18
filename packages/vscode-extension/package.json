@@ -1,0 +1,135 @@
+{
+  "name": "proveit",
+  "displayName": "ProveIt",
+  "description": "Track your coding process and build verifiable portfolios",
+  "version": "0.1.0",
+  "publisher": "proveit",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "proveit.startSession",
+        "title": "ProveIt: Start Session"
+      },
+      {
+        "command": "proveit.pauseSession",
+        "title": "ProveIt: Pause Session"
+      },
+      {
+        "command": "proveit.resumeSession",
+        "title": "ProveIt: Resume Session"
+      },
+      {
+        "command": "proveit.endSession",
+        "title": "ProveIt: End Session"
+      },
+      {
+        "command": "proveit.viewSessions",
+        "title": "ProveIt: View Sessions"
+      },
+      {
+        "command": "proveit.verifyChain",
+        "title": "ProveIt: Verify Hash Chain"
+      },
+      {
+        "command": "proveit.showDashboard",
+        "title": "ProveIt: Show Dashboard"
+      },
+      {
+        "command": "proveit.uploadSession",
+        "title": "ProveIt: Upload Session to Backend"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "proveit.acceptInlineSuggestion",
+        "key": "tab",
+        "when": "inlineSuggestionVisible && !editorTabMovesFocus"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "proveit",
+          "title": "ProveIt",
+          "icon": "$(graph)"
+        }
+      ]
+    },
+    "views": {
+      "proveit": [
+        {
+          "id": "proveit.sessions",
+          "name": "Sessions"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "ProveIt",
+      "properties": {
+        "proveit.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable ProveIt tracking"
+        },
+        "proveit.idleTimeoutMinutes": {
+          "type": "number",
+          "default": 5,
+          "description": "Minutes of inactivity before pausing session"
+        },
+        "proveit.sessionEndTimeoutMinutes": {
+          "type": "number",
+          "default": 30,
+          "description": "Minutes of inactivity before ending session"
+        },
+        "proveit.flushIntervalSeconds": {
+          "type": "number",
+          "default": 60,
+          "description": "Interval in seconds for flushing events to disk"
+        },
+        "proveit.excludePatterns": {
+          "type": "array",
+          "default": [
+            ".env",
+            ".env.*",
+            "*.pem",
+            "*.key"
+          ],
+          "description": "File patterns to exclude from tracking"
+        },
+        "proveit.backendUrl": {
+          "type": "string",
+          "default": "http://localhost:4000",
+          "description": "URL of the ProveIt backend server"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "clean": "rm -rf out",
+    "lint": "eslint src/",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@proveit/shared": "workspace:*",
+    "minimatch": "^10.2.1"
+  },
+  "devDependencies": {
+    "@types/minimatch": "^6.0.0",
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "esbuild": "^0.21.0",
+    "vitest": "^1.6.0"
+  }
+}

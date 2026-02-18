@@ -1,0 +1,15 @@
+node_modules/
+dist/
+out/
+*.vsix
+.turbo/
+.DS_Store
+*.log
+.env
+.env.*
+coverage/
+*.db
+*.db-shm
+*.db-wal
+.next/
+.proveit/

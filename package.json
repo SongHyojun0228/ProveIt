@@ -1,0 +1,27 @@
+{
+  "name": "proveit",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Process-tracking portfolio platform",
+  "scripts": {
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "clean": "turbo run clean",
+    "dev": "turbo run dev",
+    "dev:backend": "pnpm --filter @proveit/backend dev",
+    "dev:dashboard": "pnpm --filter @proveit/dashboard dev"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.0",
+    "turbo": "^2.0.0",
+    "typescript": "^5.4.0"
+  },
+  "packageManager": "pnpm@9.1.0",
+  "engines": {
+    "node": ">=18"
+  }
+}
